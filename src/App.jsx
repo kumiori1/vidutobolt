@@ -575,43 +575,6 @@ const TestimonialsSection = ({ onAuthRequired }) => {
   );
 };
 
-// Header Component
-const Header = ({ user, onAuthRequired, currentPath }) => (
-  <header className="fixed top-0 inset-x-0 z-50">
-    <div className="max-w-5xl mx-2 md:mx-auto p-2 px-4 mt-2 bg-white/70 backdrop-blur-md rounded-xl flex items-center justify-between shadow-sm">
-      <Link to="/" className="flex items-center gap-2">
-        <Logo size={32} />
-        <span className="text-2xl font-light text-gray-900 tracking-tight hover:text-gray-700 transition-colors">
-          Viduto
-        </span>
-      </Link>
-      
-      <nav className="hidden md:flex items-center gap-4">
-        <Link to="/features" className={`transition-colors font-normal ${currentPath === '/features' ? 'text-orange-500' : 'text-gray-700 hover:text-black'}`}>Features</Link>
-        <a href="https://discord.gg/MdBr54xe" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-black transition-colors font-normal">Community</a>
-        <Link to="/pricing" className={`transition-colors font-normal ${currentPath === '/pricing' ? 'text-orange-500' : 'text-gray-700 hover:text-black'}`}>Pricing</Link>
-        <Link to="/blog" className={`transition-colors font-normal ${currentPath === '/blog' ? 'text-orange-500' : 'text-gray-700 hover:text-black'}`}>Blog</Link>
-        <Link to="/enterprise" className={`transition-colors font-normal ${currentPath === '/enterprise' ? 'text-orange-500' : 'text-gray-700 hover:text-black'}`}>Enterprise</Link>
-      </nav>
-
-      <div className="flex items-center gap-2">
-        {user ? (
-          <Button asChild className="px-3 py-1.5 bg-orange-500 text-white font-normal text-sm rounded-full hover:bg-orange-500/90 transform hover:scale-[1.02] transition-all duration-200">
-            <Link to="/dashboard">Dashboard</Link>
-          </Button>
-        ) : (
-          <Button
-            onClick={onAuthRequired}
-            className="px-3 py-1.5 bg-orange-500 text-white font-normal text-sm rounded-full hover:bg-orange-500/90 transform hover:scale-[1.02] transition-all duration-200"
-          >
-            Get Started
-          </Button>
-        )}
-      </div>
-    </div>
-  </header>
-);
-
 // Footer Component
 const Footer = () => (
   <footer className="bg-gray-900 text-white py-20">
@@ -943,3 +906,49 @@ const ChatInterface = ({ chatId, onChatUpdate, onCreditsRefreshed, onNewChat, da
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
             className={darkMode ? 'border-gray-600 text-gray-300 hover:bg-gray-700' : ''}
+          >
+            <Upload className="w-4 h-4" />
+          </Button>
+          
+          <Button
+            type="submit"
+            disabled={!input.trim() && !selectedFile}
+            className="bg-orange-500 hover:bg-orange-600 text-white"
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+// Mobile Menu Component
+const MobileMenu = ({ isOpen, onClose }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 md:hidden">
+      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
+      <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-xl">
+        <div className="flex items-center justify-between p-6 border-b">
+          <div className="flex items-center gap-2">
+            <Logo size={24} />
+            <span className="text-xl font-light">Viduto</span>
+          </div>
+          <button onClick={onClose} className="p-2 text-gray-500">
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        
+        <nav className="p-6 space-y-4">
+          <Link to="/features" className="block py-2 text-gray-700 hover:text-black transition-colors">Features</Link>
+          <a href="https://discord.gg/MdBr54xe" target="_blank" rel="noopener noreferrer" className="block py-2 text-gray-700 hover:text-black transition-colors">Community</a>
+          <Link to="/pricing" className="block py-2 text-gray-700 hover:text-black transition-colors">Pricing</Link>
+          <Link to="/blog" className="block py-2 text-gray-700 hover:text-black transition-colors">Blog</Link>
+          <Link to="/enterprise" className="block py-2 text-gray-700 hover:text-black transition-colors">Enterprise</Link>
+        </nav>
+      </div>
+    </div>
+  );
+};
