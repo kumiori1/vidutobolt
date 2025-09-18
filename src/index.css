@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Scrolling animations for testimonials */
+  @keyframes scroll-infinite {
+    from { 
+      transform: translateX(0); 
+    }
+    to { 
+      transform: translateX(-50%); 
+    }
+  }
+  
+  @keyframes scroll-infinite-reverse {
+    from { 
+      transform: translateX(-50%); 
+    }
+    to { 
+      transform: translateX(0); 
+    }
+  }
+  
+  .animate-scroll-infinite {
+    animation: scroll-infinite var(--scroll-duration, 40s) linear infinite;
+  }
+  
+  .animate-scroll-infinite-reverse {
+    animation: scroll-infinite-reverse var(--scroll-duration, 40s) linear infinite;
+  }
+  
+  .scrolling-wrapper:hover .animate-scroll-infinite,
+  .scrolling-wrapper:hover .animate-scroll-infinite-reverse {
+    animation-play-state: paused;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+
+  /* Glass morphism effect for headers */
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Custom button hover effects */
+  .btn-hover-scale {
+    transition: all 0.2s ease;
+  }
+  
+  .btn-hover-scale:hover {
+    transform: scale(1.02);
+  }
+
+  /* Dark mode scrollbar */
+  .dark ::-webkit-scrollbar-track {
+    background: #374151;
+  }
+  
+  .dark ::-webkit-scrollbar-thumb {
+    background: #6b7280;
+  }
+  
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
+}
