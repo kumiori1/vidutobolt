@@ -6,7 +6,7 @@ import {
   User as UserIcon, LogOut, Plus, HelpCircle, Sun, Moon, Gift, Zap,
   Settings, Loader2, Download, AlertCircle, Check, Minus
 } from 'lucide-react';
-import { cn } from './lib/utils';
+import { cn } from './llb/utils';
 
 // Mock API functions (replace with actual API calls)
 const mockApi = {
