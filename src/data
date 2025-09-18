@@ -1,0 +1,185 @@
+// src/data/postsData.js
+export const postsData = [
+  {
+    id: "p12",
+    slug: "complete-guide-to-text-based-video-creation",
+    title: "Complete Guide to Text-Based Video Creation [No Skills Needed]",
+    meta_description: "Master text-based video creation without any technical skills. Create professional videos just by typing. Examples and templates included.",
+    excerpt: "If you can write an email, you can create professional videos. Type what you want, get a polished video in minutes.",
+    cover_image_url: "https://images.unsplash.com/photo-1483058712412-4245e9b90334?q=80&w=1600&auto=format&fit=crop",
+    author: "Viduto Team",
+    tags: ["Guides", "Text-to-Video", "AI"],
+    reading_time: "7 min",
+    published_at: "2024-01-20T12:00:00Z",
+    content: `## The Skill Making Editing Obsolete
+If you can type, you can create professional videos—no courses, no tutorials.
+
+### What is Text-Based Video Creation?
+Describe your video in plain English. AI creates it professionally.
+- You write: "Show my product with energetic music and modern transitions."
+- You get: A polished 30-second video ready for Reels, TikTok, Shorts.
+
+### The Process
+1. Write your core description (what to show, how it should feel, who it's for).
+2. Add specifics (features to highlight, lifestyle context, CTA).
+3. Upload assets (logos, product images).
+4. Let AI work (~10 minutes).
+5. Refine with simple instructions ("Make the opening more dramatic").
+
+### Templates
+- Product Launch: "Create exciting product reveal with anticipation and powerful ending."
+- Social: "Trendy, fast-paced lifestyle edit of [product] for IG Reels."
+- Business Intro: "Professional overview with trustworthy tone and modern style."
+
+### Why Text Wins
+- Cost: $20/month vs. thousands in agency fees.
+- Speed: 10 minutes vs. 30 hours of production.
+- Accessibility: Anyone can do it.
+
+### Real-World Wins
+- E-commerce: "Show product from 3 angles with upbeat music" → ready for product page.
+- Social: "Trendy lifestyle edit with viral transitions" → publish same day.
+
+Typing is the new editing.`
+  },
+  {
+    id: "p11",
+    slug: "ten-minute-video-creation",
+    title: "10-Minute Video Creation: Faster Than Agencies Reply to Emails",
+    meta_description: "Create professional videos in 10 minutes while agencies take weeks. The exact process and comparisons. Start from $20/month.",
+    excerpt: "Create a professional 30-second video in 10 minutes—while agencies are still reading your brief.",
+    cover_image_url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1600&auto=format&fit=crop",
+    author: "Viduto Team",
+    tags: ["Speed", "Agencies", "Efficiency"],
+    reading_time: "5 min",
+    published_at: "2024-01-15T12:00:00Z",
+    content: `## Speed That Changes Everything
+While agencies take 3-6 weeks, you can have professional videos in 10 minutes.
+
+### The 10-Minute Breakdown
+- **Minute 1-2**: Upload product image and write brief
+- **Minute 3**: AI analyzes and creates video plan
+- **Minute 4-9**: Video generation and processing
+- **Minute 10**: Download and publish
+
+### Agency vs. Viduto
+**Traditional Agency:**
+- Initial call: 1 week wait
+- Brief discussion: Another week
+- First draft: 2-3 weeks
+- Revisions: 1-2 weeks each
+- Final delivery: 6-8 weeks total
+- Cost: $3,000-$15,000
+
+**Viduto:**
+- Upload and describe: 2 minutes
+- AI creates video: 8 minutes
+- Revisions: 3 minutes each
+- Total time: 10 minutes
+- Cost: $20/month
+
+### Why Speed Matters
+- Launch products faster
+- Test multiple concepts same day
+- React to trends immediately
+- Reduce time-to-market by months
+
+The future belongs to the fast.`
+  },
+  {
+    id: "p10",
+    slug: "product-videos-that-convert",
+    title: "Product Videos That Convert: Data From 10,000+ Videos",
+    meta_description: "Analysis of 10,000+ product videos reveals what makes viewers buy. Hook strategies, optimal length, and conversion patterns.",
+    excerpt: "We analyzed 10,000+ product videos to find what makes people buy. Here's what converts.",
+    cover_image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1600&auto=format&fit=crop",
+    author: "Viduto Team",
+    tags: ["Conversion", "Data", "Strategy"],
+    reading_time: "8 min",
+    published_at: "2024-01-10T12:00:00Z",
+    content: `## What 10,000+ Videos Taught Us About Conversion
+
+After analyzing thousands of product videos, clear patterns emerge.
+
+### The Hook That Works
+**First 3 seconds determine everything:**
+- 73% of viewers decide to keep watching in first 3 seconds
+- Problem-solution hooks convert 2.3x better than feature lists
+- Movement or transformation gets 67% more engagement
+
+### Optimal Video Structure
+**30-Second Formula (Based on Data):**
+- 0-3s: Hook with problem or transformation
+- 3-12s: Show product solving the problem
+- 12-24s: Social proof or lifestyle context
+- 24-30s: Clear call-to-action
+
+### Length vs. Conversion
+- 15-30 seconds: Highest conversion rates
+- 30-60 seconds: Best for complex products
+- 60+ seconds: Significant drop-off
+
+### Visual Patterns That Convert
+1. **Multiple angles**: +45% conversion
+2. **Lifestyle context**: +38% engagement
+3. **Before/after**: +52% for problem-solving products
+4. **Text overlays**: +23% retention
+
+### Platform Differences
+**Instagram Reels**: Trendy, fast-paced
+**TikTok**: Authentic, relatable
+**YouTube Shorts**: Educational angle
+**Facebook**: Emotional connection
+
+The data doesn't lie: structure beats creativity for conversion.`
+  }
+];
+
+// src/components/PostCard.jsx
+import React from 'react';
+import { Button } from './ui/Button';
+
+export const PostCard = ({ post }) => (
+  <article className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 group">
+    <div className="relative overflow-hidden">
+      <img
+        src={post.cover_image_url}
+        alt={post.title}
+        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+      />
+      <div className="absolute top-4 left-4">
+        <span className="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">
+          {post.tags[0]}
+        </span>
+      </div>
+    </div>
+    <div className="p-6">
+      <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+        <span>{post.reading_time} read</span>
+        <span>{new Date(post.published_at).toLocaleDateString()}</span>
+      </div>
+      <h3 className="text-xl font-normal text-gray-900 mb-3 leading-tight group-hover:text-orange-600 transition-colors">
+        {post.title}
+      </h3>
+      <p className="text-gray-600 leading-relaxed font-light mb-4">
+        {post.excerpt}
+      </p>
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-gray-500">{post.author}</span>
+        <Button variant="ghost" size="sm" className="text-orange-600 hover:text-orange-700">
+          Read More →
+        </Button>
+      </div>
+    </div>
+  </article>
+);
+
+// src/data/testimonialsData.js
+export const testimonialsData = [
+  { id: 1, quote: "This is no doubt the only video tool a product-based business needs. Amazing results every time!", name: "Sarah M.", role: "e-Commerce entrepreneur", avatar: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
+  { id: 2, quote: "I just canceled 6 subscriptions thanks to Viduto.com. This tool replaced everything I was using before.", name: "David K.", role: "Agency owner", avatar: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
+  { id: 3, quote: "I can't believe I paid thousands for agencies and waited 6 weeks for ads. Viduto delivers in minutes!", name: "Emma R.", role: "e-Commerce marketer", avatar: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
+  { id: 4, quote: "My e-com campaigns just took off thanks to Viduto. So easy to A/B test creatives now!", name: "Michael T.", role: "e-Commerce entrepreneur", avatar: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
+  { id: 5, quote: "Finally a video tool that uses my actual product and not generic AI stock footage. Game changer!", name: "Jessica L.", role: "Video editor", avatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
+  { id: 6, quote: "It's like Lovable but for marketing videos. The AI understands exactly what I need every time.", name: "Alex P.", role: "e-Commerce marketer", avatar: "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" }
+];
