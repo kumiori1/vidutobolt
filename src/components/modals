@@ -1,0 +1,266 @@
+// src/components/AuthModal.jsx
+import React, { useState } from 'react';
+import { X, Loader2 } from 'lucide-react';
+import { Button } from './ui/Button';
+import { Input } from './ui/Input';
+import { mockApi } from '../utils/mockApi';
+import { toast } from '../utils/toast';
+
+export const AuthModal = ({ isOpen, onClose }) => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (isLogin) {
+        await mockApi.User.signIn(email, password);
+      } else {
+        await mockApi.User.signUp(email, password, fullName);
+      }
+      onClose();
+      window.location.reload();
+    } catch (error) {
+      console.error('Auth error:', error);
+      toast.error('Authentication failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg max-w-md w-full p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-light">{isLogin ? 'Sign In' : 'Sign Up'}</h2>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {!isLogin && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <Input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
+            </div>
+          )}
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Loading...
+              </>
+            ) : (
+              isLogin ? 'Sign In' : 'Sign Up'
+            )}
+          </Button>
+        </form>
+        
+        <div className="mt-4 text-center">
+          <button 
+            onClick={() => setIsLogin(!isLogin)}
+            className="text-orange-500 hover:text-orange-600 text-sm"
+          >
+            {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// src/components/HelpModal.jsx
+import React from 'react';
+import { X, HelpCircle } from 'lucide-react';
+
+export const HelpModal = ({ isOpen, onClose, darkMode }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className={`p-8 rounded-2xl max-w-md w-full relative shadow-2xl border ${
+        darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      }`}>
+        <button
+          onClick={onClose}
+          className={`absolute top-3 right-3 rounded-full p-2 ${
+            darkMode ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'
+          }`}
+        >
+          <X className="w-5 h-5" />
+        </button>
+        
+        <div className="text-center mb-6">
+          <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+            darkMode ? 'bg-blue-500/20' : 'bg-blue-100'
+          }`}>
+            <HelpCircle className="w-8 h-8 text-blue-500" />
+          </div>
+          <h2 className={`text-2xl font-light mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            Need Help?
+          </h2>
+          <p className={`font-light ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            We're here to help you get started with Viduto
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <a
+            href="mailto:support@viduto.com"
+            className={`block p-4 rounded-lg border text-center hover:shadow-md transition-all ${
+              darkMode ? 'bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            📧 Email Support
+          </a>
+          
+          <a
+            href="https://discord.gg/MdBr54xe"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`block p-4 rounded-lg border text-center hover:shadow-md transition-all ${
+              darkMode ? 'bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            💬 Join Discord Community
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// src/components/WinCreditsModal.jsx
+import React from 'react';
+import { X, Gift } from 'lucide-react';
+import { toast } from '../utils/toast';
+
+export const WinCreditsModal = ({ isOpen, onClose, darkMode }) => {
+  if (!isOpen) return null;
+
+  const handleShareAction = (platform) => {
+    setTimeout(() => {
+      toast.success('5 credits added to your account!');
+      onClose();
+    }, 1000);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className={`p-8 rounded-2xl max-w-md w-full relative shadow-2xl border ${
+        darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      }`}>
+        <button
+          onClick={onClose}
+          className={`absolute top-3 right-3 rounded-full p-2 ${
+            darkMode ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-700' : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'
+          }`}
+        >
+          <X className="w-5 h-5" />
+        </button>
+        
+        <div className="text-center mb-6">
+          <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+            darkMode ? 'bg-orange-500/20' : 'bg-orange-100'
+          }`}>
+            <Gift className="w-8 h-8 text-orange-500" />
+          </div>
+          <h2 className={`text-2xl font-light mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+            Win Free Credits!
+          </h2>
+          <p className={`font-light ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            Share Viduto and earn 5 free credits
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          <button
+            onClick={() => handleShareAction('instagram')}
+            className="w-full p-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center gap-3"
+          >
+            📷 Share on Instagram
+            <span className="text-sm">+5 credits</span>
+          </button>
+          
+          <button
+            onClick={() => handleShareAction('facebook')}
+            className="w-full p-4 bg-blue-600 text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center gap-3"
+          >
+            📘 Share on Facebook
+            <span className="text-sm">+5 credits</span>
+          </button>
+          
+          <button
+            onClick={() => handleShareAction('linkedin')}
+            className="w-full p-4 bg-blue-700 text-white rounded-lg hover:shadow-lg transition-all flex items-center justify-center gap-3"
+          >
+            💼 Share on LinkedIn
+            <span className="text-sm">+5 credits</span>
+          </button>
+        </div>
+
+        <p className={`text-xs text-center mt-4 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+          Credits will be added to your account after sharing
+        </p>
+      </div>
+    </div>
+  );
+};
+
+// src/components/CreditsModal.jsx
+import React, { useState } from 'react';
+import { X, Zap, Loader2 } from 'lucide-react';
+import { Button } from './ui/Button';
+import { toast } from '../utils/toast';
+
+export const CreditsModal = ({ isOpen, onClose, darkMode }) => {
+  const [loading, setLoading] = useState(false);
+
+  if (!isOpen) return null;
+
+  const handlePurchaseCredits = async () => {
+    setLoading(true);
+    setTimeout(() => {
+      toast.success('Credits purchased successfully!');
+      onClose();
+      setLoading(false);
+    }, 2000);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className={`p-8 rounded-2xl max-w-md w-full relative shadow-2xl border ${
+        darkMode ? 'bg-gray-800 border-gray-700' : 'bg
