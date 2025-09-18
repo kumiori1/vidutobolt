@@ -952,3 +952,24 @@ const MobileMenu = ({ isOpen, onClose }) => {
     </div>
   );
 };
+
+// Main App Component
+const App = () => {
+  const [user, setUser] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const handleAuthRequired = () => {
+    setShowAuthModal(true);
+  };
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage user={user} onAuthRequired={handleAuthRequired} />} />
+      </Routes>
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+    </Router>
+  );
+};
+
+export default App;
