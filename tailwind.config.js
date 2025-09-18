@@ -10,6 +10,8 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
+        background: '#f9fafb',
+        foreground: '#111827',
         orange: {
           50: '#fff7ed',
           100: '#ffedd5',
