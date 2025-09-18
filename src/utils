@@ -1,0 +1,107 @@
+// src/utils/cn.js
+export const cn = (...classes) => classes.filter(Boolean).join(' ');
+
+// src/utils/toast.js
+export const toast = {
+  success: (message) => console.log('✅ SUCCESS:', message),
+  error: (message) => console.log('❌ ERROR:', message),
+  info: (message) => console.log('ℹ️ INFO:', message)
+};
+
+// src/utils/mockApi.js
+export const mockApi = {
+  User: {
+    me: async () => {
+      const user = JSON.parse(localStorage.getItem('mockUser') || 'null');
+      if (!user) throw new Error('Not authenticated');
+      return user;
+    },
+    logout: async () => {
+      localStorage.removeItem('mockUser');
+      localStorage.removeItem('mockChats');
+    },
+    signUp: async (email, password, fullName) => {
+      const user = { 
+        id: '1', 
+        email, 
+        full_name: fullName, 
+        subscription_status: 'active',
+        credits: 150 
+      };
+      localStorage.setItem('mockUser', JSON.stringify(user));
+      return user;
+    },
+    signIn: async (email, password) => {
+      const user = { 
+        id: '1', 
+        email, 
+        full_name: 'Demo User', 
+        subscription_status: 'active',
+        credits: 150 
+      };
+      localStorage.setItem('mockUser', JSON.stringify(user));
+      return user;
+    }
+  },
+  Chat: {
+    filter: async (filters, sort) => {
+      const chats = JSON.parse(localStorage.getItem('mockChats') || '[]');
+      return chats;
+    },
+    create: async (data) => {
+      const newChat = { 
+        id: Date.now().toString(), 
+        ...data, 
+        created_at: new Date().toISOString(),
+        updated_date: new Date().toISOString()
+      };
+      const chats = JSON.parse(localStorage.getItem('mockChats') || '[]');
+      chats.unshift(newChat);
+      localStorage.setItem('mockChats', JSON.stringify(chats));
+      return newChat;
+    },
+    update: async (id, data) => ({ id, ...data })
+  },
+  Message: {
+    filter: async (chatId) => {
+      if (!chatId) return [];
+      return [
+        { 
+          id: 1, 
+          chat_id: chatId, 
+          message_type: 'user', 
+          content: 'Create a product showcase video for my new sneakers',
+          created_at: new Date().toISOString()
+        },
+        { 
+          id: 2, 
+          chat_id: chatId, 
+          message_type: 'assistant', 
+          content: `## 🎬 Video Plan
+
+I'll create an engaging 30-second video for your sneakers with 5 dynamic scenes:
+
+**SCENE 1: HOOK** ⏱️ *[0:00-0:06]*
+Opening shot of sneakers in action
+
+**SCENE 2: INTRIGUE** ⏱️ *[0:06-0:12]*
+Close-up details and craftsmanship
+
+**SCENE 3: REVEAL** ⏱️ *[0:12-0:18]*
+Full product showcase from multiple angles
+
+**SCENE 4: BENEFIT** ⏱️ *[0:18-0:24]*
+Comfort and performance demonstration
+
+**SCENE 5: PAYOFF** ⏱️ *[0:24-0:30]*
+Final branded moment with call-to-action
+
+Ready to start production? This will cost 10 credits.`,
+          created_at: new Date().toISOString(),
+          metadata: { is_brief: true, is_approval_section: true }
+        }
+      ];
+    },
+    create: async (data) => ({ id: Date.now(), ...data, created_at: new Date().toISOString() })
+  }
+};
