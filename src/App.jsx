@@ -1,3 +1,8 @@
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Menu, X, User as UserIcon, CreditCard, LogOut, Plus, MessageSquare, HelpCircle, Sun, Moon, Gift, Zap, Settings, Send, Upload, Play, Download, AlertCircle, Loader2, ArrowRight, Clock, Sparkles, TrendingUp, DollarSign, FileText, Star, Check, Building, Shield, Users, GitBranch, Share2, CheckCircle, Video, Calendar, Home } from 'lucide-react';
+import { cn } from './lib/utils';
+
 // Enhanced Home Page Component with more content
 const HomePage = ({ user, onAuthRequired }) => {
   const [prompt, setPrompt] = useState('');
@@ -292,9 +297,7 @@ const HomePage = ({ user, onAuthRequired }) => {
       <Footer />
     </div>
   );
-              import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
-import { Menu, X, User as UserIcon, CreditCard, LogOut, Plus, MessageSquare, HelpCircle, Sun, Moon, Gift, Zap, Settings, Send, Upload, Play, Download, AlertCircle, Loader2, ArrowRight, Clock, Sparkles, TrendingUp, DollarSign, FileText, Star, Check, Building, Shield, Users, GitBranch, Share2, CheckCircle, Video, Calendar, Home } from 'lucide-react';
+};
 
 // Mock API functions
 const mockApi = {
