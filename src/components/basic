@@ -1,0 +1,145 @@
+// src/components/Logo.jsx
+import React from 'react';
+
+export const Logo = ({ size = 32, className = '' }) => (
+  <img 
+    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/69a552913_vidutonobg.png"
+    alt="Viduto Logo"
+    className={className}
+    style={{ width: `${size}px`, height: `${size}px` }}
+  />
+);
+
+// src/components/Footer.jsx
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Logo } from './Logo';
+
+export const Footer = () => (
+  <footer className="bg-gray-900 text-gray-400 py-12">
+    <div className="max-w-7xl mx-auto px-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <Logo size={24} />
+            <h3 className="font-normal text-white">Viduto</h3>
+          </div>
+          <p className="text-sm font-light">Transform your product images into viral video ads with AI-powered creation tools</p>
+        </div>
+        <div>
+          <h3 className="font-normal text-white mb-4">Product</h3>
+          <ul className="space-y-2 text-sm font-light">
+            <li><Link to="/features" className="hover:text-white">Features</Link></li>
+            <li><Link to="/pricing" className="hover:text-white">Pricing</Link></li>
+            <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
+          </ul>
+        </div>
+        <div>
+          <h3 className="font-normal text-white mb-4">Support</h3>
+          <ul className="space-y-2 text-sm font-light">
+            <li><a href="mailto:support@viduto.com" className="hover:text-white">support@viduto.com</a></li>
+            <li><a href="https://discord.gg/MdBr54xe" target="_blank" rel="noopener noreferrer" className="hover:text-white">Discord Community</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 className="font-normal text-white mb-4">Legal</h3>
+          <ul className="space-y-2 text-sm font-light">
+            <li><Link to="/terms" className="hover:text-white">Terms of Service</Link></li>
+            <li><Link to="/privacy" className="hover:text-white">Privacy Policy</Link></li>
+          </ul>
+        </div>
+      </div>
+      <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm">
+        <p className="font-light">&copy; {new Date().getFullYear()} Viduto. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+);
+
+// src/components/PageLayout.jsx
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Menu } from 'lucide-react';
+import { Button } from './ui/Button';
+import { Logo } from './Logo';
+import { Footer } from './Footer';
+import { AuthModal } from './AuthModal';
+import { MobileMenu } from './MobileMenu';
+
+export const PageLayout = ({ children, user, onAuthRequired }) => {
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleAuthRequired = () => {
+    if (!user) {
+      setShowAuthModal(true);
+    } else {
+      onAuthRequired();
+    }
+  };
+
+  return (
+    <>
+      <header className="fixed top-0 inset-x-0 z-50">
+        <div className="max-w-5xl mx-2 md:mx-auto p-2 px-4 mt-2 bg-white/70 backdrop-blur-md rounded-xl flex items-center justify-between shadow-sm">
+          <Link to="/home" className="flex items-center gap-2">
+            <Logo size={20} className="w-6 h-6 md:w-8 md:h-8" />
+            <span className="text-2xl font-light text-gray-900 tracking-tight hover:text-gray-700 transition-colors">
+              Viduto
+            </span>
+          </Link>
+          
+          <nav className="hidden md:flex items-center gap-4">
+            <Link to="/features" className="text-gray-700 hover:text-black transition-colors font-normal">Features</Link>
+            <a href="https://discord.gg/MdBr54xe" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-black transition-colors font-normal">Community</a>
+            <Link to="/pricing" className="text-gray-700 hover:text-black transition-colors font-normal">Pricing</Link>
+            <Link to="/blog" className="text-gray-700 hover:text-black transition-colors font-normal">Blog</Link>
+            <Link to="/enterprise" className="text-gray-700 hover:text-black transition-colors font-normal">Enterprise</Link>
+          </nav>
+
+          <div className="hidden md:flex items-center gap-2">
+            {user ? (
+              <Button asChild className="px-3 py-1.5 bg-orange-500 text-white font-normal text-sm rounded-full hover:bg-orange-500/90 transform hover:scale-[1.02] transition-all duration-200">
+                <Link to="/dashboard">Dashboard</Link>
+              </Button>
+            ) : (
+              <Button onClick={handleAuthRequired} className="px-3 py-1.5 bg-orange-500 text-white font-normal text-sm rounded-full hover:bg-orange-500/90 transform hover:scale-[1.02] transition-all duration-200">
+                Get Started
+              </Button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 md:hidden">
+            {user ? (
+              <Button asChild className="px-3 py-1.5 bg-orange-500 text-white font-normal text-sm rounded-full hover:bg-orange-500/90 transform hover:scale-[1.02] transition-all duration-200">
+                <Link to="/dashboard">Dashboard</Link>
+              </Button>
+            ) : (
+              <Button onClick={handleAuthRequired} className="px-3 py-1.5 bg-orange-500 text-white font-normal text-sm rounded-full hover:bg-orange-500/90 transform hover:scale-[1.02] transition-all duration-200">
+                Get Started
+              </Button>
+            )}
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="ml-2 text-gray-600 hover:text-gray-900"
+            >
+              <Menu size={20} />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {children}
+      
+      <Footer />
+      
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      <MobileMenu 
+        isOpen={isMobileMenuOpen} 
+        onClose={() => setIsMobileMenuOpen(false)} 
+        user={user}
+        handleAuthRequired={handleAuthRequired}
+      />
+    </>
+  );
+};
