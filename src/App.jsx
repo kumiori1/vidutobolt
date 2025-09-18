@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowRight, Menu, X, Play, Upload, Send, Camera, Clock, Wand2, 
   MessageSquare, TrendingUp, DollarSign, FileText, CreditCard, 
@@ -108,7 +109,7 @@ const Textarea = ({ className = '', ...props }) => (
 const Header = ({ user, onAuthRequired, showMobileMenu, setShowMobileMenu }) => (
   <header className="fixed top-0 inset-x-0 z-50">
     <div className="max-w-5xl mx-2 md:mx-auto p-2 px-4 mt-2 bg-white/70 backdrop-blur-md rounded-xl flex items-center justify-between shadow-sm">
-      <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.pathname !== '/' && (window.location.href = '/')}>
+      <Link to="/" className="flex items-center gap-2">
         <img 
           src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68b4aa46f5d6326ab93c3ed0/17cb8e7bc_vidutonobg.png" 
           alt="Viduto Logo" 
@@ -117,22 +118,20 @@ const Header = ({ user, onAuthRequired, showMobileMenu, setShowMobileMenu }) => 
         <span className="text-2xl font-light text-gray-900 tracking-tight hover:text-gray-700 transition-colors">
           Viduto
         </span>
-      </div>
+      </Link>
       
       <nav className="hidden md:flex items-center gap-4">
-        <button className="text-gray-700 hover:text-black transition-colors font-normal">Features</button>
+        <Link to="/features" className="text-gray-700 hover:text-black transition-colors font-normal">Features</Link>
         <a href="https://discord.gg/MdBr54xe" target="_blank" rel="noopener noreferrer" className="text-gray-700 hover:text-black transition-colors font-normal">Community</a>
-        <button className="text-gray-700 hover:text-black transition-colors font-normal">Pricing</button>
-        <button className="text-gray-700 hover:text-black transition-colors font-normal">Blog</button>
+        <Link to="/pricing" className="text-gray-700 hover:text-black transition-colors font-normal">Pricing</Link>
+        <Link to="/blog" className="text-gray-700 hover:text-black transition-colors font-normal">Blog</Link>
+        <Link to="/enterprise" className="text-gray-700 hover:text-black transition-colors font-normal">Enterprise</Link>
       </nav>
 
       <div className="flex items-center gap-2">
         {user ? (
-          <Button 
-            onClick={() => window.location.href = '/dashboard'}
-            className="px-3 py-1.5 bg-orange-500 text-white font-normal text-sm rounded-full hover:bg-orange-500/90 transform hover:scale-[1.02] transition-all duration-200"
-          >
-            Dashboard
+          <Button asChild className="px-3 py-1.5 bg-orange-500 text-white font-normal text-sm rounded-full hover:bg-orange-500/90 transform hover:scale-[1.02] transition-all duration-200">
+            <Link to="/dashboard">Dashboard</Link>
           </Button>
         ) : (
           <Button 
@@ -175,9 +174,9 @@ const Footer = () => (
         <div>
           <h3 className="font-normal text-white mb-4">Product</h3>
           <ul className="space-y-2 text-sm font-light">
-            <li><button className="hover:text-white">Features</button></li>
-            <li><button className="hover:text-white">Pricing</button></li>
-            <li><button className="hover:text-white">Blog</button></li>
+            <li><Link to="/features" className="hover:text-white">Features</Link></li>
+            <li><Link to="/pricing" className="hover:text-white">Pricing</Link></li>
+            <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
           </ul>
         </div>
         <div>
@@ -189,8 +188,8 @@ const Footer = () => (
         <div>
           <h3 className="font-normal text-white mb-4">Legal</h3>
           <ul className="space-y-2 text-sm font-light">
-            <li><button className="hover:text-white">Terms of Service</button></li>
-            <li><button className="hover:text-white">Privacy Policy</button></li>
+            <li><Link to="/terms" className="hover:text-white">Terms of Service</Link></li>
+            <li><Link to="/privacy" className="hover:text-white">Privacy Policy</Link></li>
           </ul>
         </div>
       </div>
@@ -312,25 +311,47 @@ const MobileMenu = ({ isOpen, onClose, user, onAuthRequired }) => {
         </div>
         
         <nav className="space-y-4">
-          <button className="block w-full text-left text-gray-700 hover:text-black transition-colors font-normal">Features</button>
+          <Link to="/features" onClick={onClose} className="block text-gray-700 hover:text-black transition-colors font-normal">Features</Link>
           <a href="https://discord.gg/MdBr54xe" target="_blank" rel="noopener noreferrer" className="block text-gray-700 hover:text-black transition-colors font-normal">Community</a>
-          <button className="block w-full text-left text-gray-700 hover:text-black transition-colors font-normal">Pricing</button>
-          <button className="block w-full text-left text-gray-700 hover:text-black transition-colors font-normal">Blog</button>
+          <Link to="/pricing" onClick={onClose} className="block text-gray-700 hover:text-black transition-colors font-normal">Pricing</Link>
+          <Link to="/blog" onClick={onClose} className="block text-gray-700 hover:text-black transition-colors font-normal">Blog</Link>
+          <Link to="/enterprise" onClick={onClose} className="block text-gray-700 hover:text-black transition-colors font-normal">Enterprise</Link>
         </nav>
         
         <div className="mt-8">
           {user ? (
-            <Button 
-              onClick={() => window.location.href = '/dashboard'}
-              className="w-full"
-            >
-              Dashboard
+            <Button asChild className="w-full">
+              <Link to="/dashboard">Dashboard</Link>
             </Button>
           ) : (
-            <Button onClick={onAuthRequired} className="w-full">Get Started</Button>
+            <Button onClick={() => { onAuthRequired(); onClose(); }} className="w-full">Get Started</Button>
           )}
         </div>
       </div>
+    </div>
+  );
+};
+
+// Page Layout Component
+const PageLayout = ({ children, user, onAuthRequired }) => {
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-white">
+      <Header 
+        user={user} 
+        onAuthRequired={onAuthRequired}
+        showMobileMenu={showMobileMenu}
+        setShowMobileMenu={setShowMobileMenu}
+      />
+      {children}
+      <Footer />
+      <MobileMenu 
+        isOpen={showMobileMenu} 
+        onClose={() => setShowMobileMenu(false)} 
+        user={user}
+        onAuthRequired={onAuthRequired}
+      />
     </div>
   );
 };
@@ -343,13 +364,11 @@ const TestimonialsSection = ({ onAuthRequired }) => {
     { id: 3, quote: "I can't believe I paid thousands for agencies and waited 6 weeks for ads. Viduto delivers in minutes!", name: "Emma R.", role: "e-Commerce marketer", avatar: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
     { id: 4, quote: "My e-com campaigns just took off thanks to Viduto. So easy to A/B test creatives now!", name: "Michael T.", role: "e-Commerce entrepreneur", avatar: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
     { id: 5, quote: "Finally a video tool that uses my actual product and not generic AI stock footage. Game changer!", name: "Jessica L.", role: "Video editor", avatar: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
-    { id: 6, quote: "It's like Lovable but for marketing videos. The AI understands exactly what I need every time.", name: "Alex P.", role: "e-Commerce marketer", avatar: "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
-    { id: 7, quote: "Viduto saved me thousands on video production while delivering better results than agencies.", name: "Rachel W.", role: "Agency owner", avatar: "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
-    { id: 8, quote: "The quality is incredible and the speed is unmatched. Complete game changer for my business.", name: "James H.", role: "e-Commerce entrepreneur", avatar: "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" },
+    { id: 6, quote: "It's like Lovable but for marketing videos. The AI understands exactly what I need every time.", name: "Alex P.", role: "e-Commerce marketer", avatar: "https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop" }
   ];
 
-  const row1Testimonials = [...testimonials.slice(0, 4), ...testimonials.slice(0, 4)];
-  const row2Testimonials = [...testimonials.slice(4, 8), ...testimonials.slice(4, 8)];
+  const row1Testimonials = [...testimonials.slice(0, 3), ...testimonials.slice(0, 3)];
+  const row2Testimonials = [...testimonials.slice(3, 6), ...testimonials.slice(3, 6)];
 
   return (
     <section className="bg-gradient-to-br from-blue-100 via-purple-100 to-orange-100 py-20 relative overflow-hidden">
@@ -451,34 +470,10 @@ const TestimonialsSection = ({ onAuthRequired }) => {
   );
 };
 
-// Home Page Component
-const HomePage = () => {
-  const [user, setUser] = useState(null);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
+// HOME PAGE
+const HomePage = ({ user, onAuthRequired }) => {
   const [prompt, setPrompt] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
-
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const currentUser = await mockApi.User.me();
-        setUser(currentUser);
-      } catch (e) {
-        setUser(null);
-      }
-    };
-    checkUser();
-  }, []);
-
-  const handleAuthRequired = () => {
-    if (!user) {
-      setShowAuthModal(true);
-    } else {
-      // Navigate to dashboard logic
-      window.location.href = '/dashboard';
-    }
-  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
@@ -488,14 +483,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <Header 
-        user={user} 
-        onAuthRequired={handleAuthRequired}
-        showMobileMenu={showMobileMenu}
-        setShowMobileMenu={setShowMobileMenu}
-      />
-
+    <PageLayout user={user} onAuthRequired={onAuthRequired}>
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-to-br from-blue-100 via-purple-100 to-orange-100 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -550,7 +538,7 @@ const HomePage = () => {
             </div>
 
             <Button 
-              onClick={handleAuthRequired}
+              onClick={onAuthRequired}
               className="w-full bg-gradient-to-r from-orange-500 to-pink-500 text-white px-8 py-4 rounded-full font-normal hover:from-orange-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-200 shadow-lg"
               size="lg"
             >
@@ -619,7 +607,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      <TestimonialsSection onAuthRequired={handleAuthRequired} />
+      <TestimonialsSection onAuthRequired={onAuthRequired} />
 
       {/* Pricing Section */}
       <section className="py-20 bg-gray-900">
@@ -646,7 +634,7 @@ const HomePage = () => {
                       ))}
                     </ul>
                   </div>
-                  <Button onClick={handleAuthRequired} className="w-full">
+                  <Button onClick={onAuthRequired} className="w-full">
                     Get Started
                   </Button>
                 </div>
@@ -674,7 +662,7 @@ const HomePage = () => {
                       ))}
                     </ul>
                   </div>
-                  <Button onClick={handleAuthRequired} className="w-full bg-white text-gray-900 hover:bg-gray-100">
+                  <Button onClick={onAuthRequired} className="w-full bg-white text-gray-900 hover:bg-gray-100">
                     Start Free Trial
                   </Button>
                 </div>
@@ -683,57 +671,437 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+    </PageLayout>
+  );
+};
 
-      <Footer />
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
-      <MobileMenu 
-        isOpen={showMobileMenu} 
-        onClose={() => setShowMobileMenu(false)} 
-        user={user}
-        onAuthRequired={handleAuthRequired}
-      />
+// FEATURES PAGE
+const FeaturesPage = ({ user, onAuthRequired }) => {
+  const features = [
+    {
+      icon: <Camera className="w-8 h-8 text-orange-500" />,
+      title: "Use Your Own Product",
+      description: "Upload your actual product images and watch them come to life in professional video scenes. No generic stock footage—every frame shows your real product."
+    },
+    {
+      icon: <Clock className="w-8 h-8 text-orange-500" />,
+      title: "Lightning Fast Creation",
+      description: "From concept to completed 30-second video in about 10 minutes. Our advanced AI handles everything end-to-end."
+    },
+    {
+      icon: <Wand2 className="w-8 h-8 text-orange-500" />,
+      title: "Fully Customizable",
+      description: "Ask for changes in plain English—adjust scenes, pacing, mood, voiceover, and more."
+    },
+    {
+      icon: <MessageSquare className="w-8 h-8 text-orange-500" />,
+      title: "Text-Based Creation",
+      description: "Describe your vision and our AI handles scripting, scene generation, voiceover, and music selection. No editing software required."
+    },
+    {
+      icon: <TrendingUp className="w-8 h-8 text-orange-500" />,
+      title: "Viral-Ready Content",
+      description: "Optimized for engagement using insights from millions of social posts—built to capture attention and convert."
+    },
+    {
+      icon: <DollarSign className="w-8 h-8 text-orange-500" />,
+      title: "Pay As You Go",
+      description: "Flexible, credit-based pricing. Each revision costs 3 credits so you can refine without breaking the bank."
+    }
+  ];
+
+  return (
+    <PageLayout user={user} onAuthRequired={onAuthRequired}>
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 bg-gradient-to-br from-blue-100 via-purple-100 to-orange-100 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-gray-900 mb-6 leading-tight">
+            Top Features
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 font-light">
+            Explore all the powerful features that make Viduto the ultimate AI video creation platform for your business.
+          </p>
+          <Button
+            onClick={onAuthRequired}
+            size="lg"
+            className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-4 rounded-full font-normal hover:bg-orange-500/90 transform hover:scale-105 transition-all duration-200 shadow-lg"
+          >
+            Start creating
+            <ArrowRight size={20} />
+          </Button>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div key={index} className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+                <div className="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center mb-6">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-normal text-gray-900 mb-4">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed font-light">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </PageLayout>
+  );
+};
+
+// PRICING PAGE
+const PricingPage = ({ user, onAuthRequired }) => {
+  const tiers = [
+    {
+      name: "Starter",
+      price: "$20",
+      period: "/month",
+      credits: 60,
+      features: [
+        "60 video credits monthly",
+        "Professional 30-second videos",
+        "Product image upload",
+        "AI-powered generation",
+        "Email support",
+        "Standard processing speed"
+      ]
+    },
+    {
+      name: "Creator",
+      price: "$50",
+      period: "/month", 
+      credits: 150,
+      features: [
+        "150 video credits monthly",
+        "All Starter features",
+        "Priority email support",
+        "Advanced customization",
+        "Standard processing speed"
+      ]
+    },
+    {
+      name: "Pro",
+      price: "$100",
+      period: "/month",
+      credits: 300,
+      popular: true,
+      features: [
+        "300 video credits monthly",
+        "All Creator features", 
+        "Priority processing queue",
+        "Beta features access",
+        "Priority email support",
+        "Analytics dashboard"
+      ]
+    },
+    {
+      name: "Elite",
+      price: "$200",
+      period: "/month",
+      credits: 750,
+      features: [
+        "750 video credits monthly",
+        "All Pro features",
+        "Dedicated support", 
+        "Priority processing queue",
+        "Beta features access",
+        "White-label options",
+        "Custom integrations"
+      ]
+    }
+  ];
+
+  return (
+    <PageLayout user={user} onAuthRequired={onAuthRequired}>
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 bg-gradient-to-br from-blue-100 via-purple-100 to-orange-100 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-gray-900 mb-6 leading-tight">
+            Plans from first idea to full scale
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 font-light">
+            Start for free. Upgrade when you're ready.
+          </p>
+          <Button
+            onClick={onAuthRequired}
+            size="lg"
+            className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-4 rounded-full font-normal hover:bg-orange-500/90 transform hover:scale-105 transition-all duration-200 shadow-lg"
+          >
+            Start creating
+            <ArrowRight size={20} />
+          </Button>
+        </div>
+      </section>
+
+      {/* Pricing Tiers */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {tiers.map((tier, index) => (
+              <div key={index} className={`relative bg-white border-2 rounded-2xl p-6 ${tier.popular ? 'border-orange-500' : 'border-gray-200'}`}>
+                {tier.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span className="bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-medium">Most Popular</span>
+                  </div>
+                )}
+                
+                <div className="text-center">
+                  <h3 className="text-xl font-medium text-gray-900 mb-2">{tier.name}</h3>
+                  <div className="mb-4">
+                    <span className="text-3xl font-light text-gray-900">{tier.price}</span>
+                    <span className="text-gray-500">{tier.period}</span>
+                  </div>
+                  <p className="text-gray-600 mb-6">{tier.credits} credits per month</p>
+                  
+                  <ul className="space-y-3 mb-8 text-left">
+                    {tier.features.map((feature, fIndex) => (
+                      <li key={fIndex} className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-gray-600 text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <Button 
+                    onClick={onAuthRequired}
+                    className={`w-full ${tier.popular ? 'bg-orange-500 text-white hover:bg-orange-600' : 'border border-gray-200 text-gray-900 hover:bg-gray-50'}`}
+                    variant={tier.popular ? 'default' : 'outline'}
+                  >
+                    Get Started
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </PageLayout>
+  );
+};
+
+// BLOG PAGE
+const BlogPage = ({ user, onAuthRequired }) => {
+  const posts = [
+    {
+      id: 1,
+      title: "How to Create Viral Product Videos with AI",
+      excerpt: "Learn the secrets of creating engaging product videos that convert viewers into customers.",
+      image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400",
+      date: "2024-01-15",
+      author: "Viduto Team"
+    },
+    {
+      id: 2,
+      title: "The Future of Video Marketing in 2024",
+      excerpt: "Discover the latest trends and technologies shaping the video marketing landscape.",
+      image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=400",
+      date: "2024-01-10",
+      author: "Viduto Team"
+    },
+    {
+      id: 3,
+      title: "5 Tips for Better Product Photography",
+      excerpt: "Improve your product photos to create even better AI-generated videos.",
+      image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400",
+      date: "2024-01-05",
+      author: "Viduto Team"
+    }
+  ];
+
+  return (
+    <PageLayout user={user} onAuthRequired={onAuthRequired}>
+      {/* Hero Section */}
+      <section className="pt-32 pb-36 bg-gradient-to-br from-blue-100 via-purple-100 to-orange-100 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-gray-900 mb-6 leading-tight">
+            Our Blog
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 font-light">
+            News, guides, and insights on AI-powered video creation for product marketing.
+          </p>
+          <Button 
+            onClick={onAuthRequired} 
+            size="lg" 
+            className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-4 rounded-full font-normal hover:bg-orange-500/90 transform hover:scale-105 transition-all duration-200 shadow-lg"
+          >
+            Start creating
+            <ArrowRight size={20} />
+          </Button>
+        </div>
+      </section>
+
+      {/* Posts Grid */}
+      <section className="pt-14 pb-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.map((post) => (
+              <article key={post.id} className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow">
+                <img src={post.image} alt={post.title} className="w-full h-48 object-cover" />
+                <div className="p-6">
+                  <h2 className="text-xl font-medium text-gray-900 mb-3 line-clamp-2">{post.title}</h2>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">{post.excerpt}</p>
+                  <div className="flex items-center justify-between text-sm text-gray-500">
+                    <span>{post.author}</span>
+                    <span>{new Date(post.date).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    </PageLayout>
+  );
+};
+
+// ENTERPRISE PAGE
+const EnterprisePage = ({ user, onAuthRequired }) => {
+  const handleContactSales = () => {
+    window.location.href = 'mailto:sales@viduto.com?subject=Enterprise Inquiry';
+  };
+
+  return (
+    <PageLayout user={user} onAuthRequired={onAuthRequired}>
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-orange-500/20 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+          <div className="mb-4">
+            <span className="bg-gray-100 text-gray-700 text-sm font-normal px-4 py-2 rounded-full">
+              ENTERPRISE SOLUTIONS
+            </span>
+          </div>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-gray-900 mb-6 leading-tight">
+            Ideas shouldn't wait for production.
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-8 font-light">
+            Viduto empowers large teams and agencies to rapidly create, manage, and scale professional video content for all your marketing needs.
+          </p>
+          <Button
+            onClick={handleContactSales}
+            size="lg"
+            className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-4 rounded-full font-normal hover:bg-orange-500/90 transform hover:scale-105 transition-all duration-200 shadow-lg"
+          >
+            Contact Sales
+            <ArrowRight size={20} />
+          </Button>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-6 leading-tight">
+              Built for enterprise scale
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mx-auto mb-6">
+                <Shield className="w-6 h-6 text-orange-500" />
+              </div>
+              <h3 className="text-xl font-normal text-gray-900 mb-4 text-center">
+                Brand Safety
+              </h3>
+              <p className="text-gray-600 leading-relaxed font-light text-center">
+                Ensure consistent brand compliance across all video content with advanced governance controls.
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mx-auto mb-6">
+                <Users className="w-6 h-6 text-orange-500" />
+              </div>
+              <h3 className="text-xl font-normal text-gray-900 mb-4 text-center">
+                Team Management
+              </h3>
+              <p className="text-gray-600 leading-relaxed font-light text-center">
+                Manage unlimited team members with role-based permissions and collaborative workflows.
+              </p>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mx-auto mb-6">
+                <Building className="w-6 h-6 text-orange-500" />
+              </div>
+              <h3 className="text-xl font-normal text-gray-900 mb-4 text-center">
+                API Integration
+              </h3>
+              <p className="text-gray-600 leading-relaxed font-light text-center">
+                Integrate Viduto into your existing workflows with our comprehensive REST API and webhooks.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 bg-gray-900">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-4xl md:text-5xl font-light text-white mb-6 leading-tight">
+            Ready to transform your video workflow?
+          </h2>
+          <p className="text-xl text-gray-300 mb-8 font-light">
+            Contact our enterprise team to discuss your specific needs.
+          </p>
+          <Button
+            onClick={handleContactSales}
+            size="lg"
+            className="bg-orange-500 text-white px-8 py-4 rounded-full font-normal hover:bg-orange-500/90 transform hover:scale-105 transition-all duration-200 shadow-lg"
+          >
+            Contact Sales
+          </Button>
+        </div>
+      </section>
+    </PageLayout>
+  );
+};
+
+// DASHBOARD (Simple placeholder - you already have this)
+const Dashboard = ({ user }) => {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-3xl font-light text-gray-900 mb-4">Dashboard</h1>
+        <p className="text-gray-600">Welcome, {user?.full_name || 'User'}!</p>
+        <p className="text-sm text-gray-500 mt-2">Dashboard functionality will be implemented here.</p>
+      </div>
     </div>
   );
 };
 
-// Dashboard Component
-const Dashboard = () => {
+// MAIN APP COMPONENT
+export default function App() {
   const [user, setUser] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [chats, setChats] = useState([]);
-  const [currentChatId, setCurrentChatId] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
-  const [userCredits, setUserCredits] = useState(150);
 
   useEffect(() => {
-    const loadDashboard = async () => {
+    const checkUser = async () => {
       try {
         const currentUser = await mockApi.User.me();
         setUser(currentUser);
-        const chatList = await mockApi.Chat.list();
-        setChats(chatList);
-        if (chatList.length > 0) {
-          setCurrentChatId(chatList[0].id);
-        }
-      } catch (error) {
-        window.location.href = '/';
+      } catch (e) {
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
-    loadDashboard();
+    checkUser();
   }, []);
 
-  const createNewChat = async () => {
-    const newChat = await mockApi.Chat.create('New Video Project');
-    setChats([newChat, ...chats]);
-    setCurrentChatId(newChat.id);
-  };
-
-  const handleSignOut = async () => {
-    await mockApi.User.signOut();
-    window.location.href = '/';
+  const handleAuthRequired = () => {
+    if (!user) {
+      setShowAuthModal(true);
+    }
   };
 
   if (loading) {
@@ -745,387 +1113,28 @@ const Dashboard = () => {
   }
 
   return (
-    <div className={`min-h-screen flex ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-      {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 fixed md:static inset-y-0 left-0 z-50 w-80 ${darkMode ? 'bg-gray-800' : 'bg-white'} border-r ${darkMode ? 'border-gray-700' : 'border-gray-200'} transition-transform duration-300 flex flex-col`}>
-        
-        {/* Sidebar Header */}
-        <div className={`p-4 md:p-6 border-b flex items-center justify-between ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-          <div className="flex items-center gap-3">
-            <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68b4aa46f5d6326ab93c3ed0/17cb8e7bc_vidutonobg.png" 
-              alt="Viduto" 
-              className="w-8 h-8"
-            />
-            <span className={`text-xl font-light ${darkMode ? 'text-white' : 'text-gray-900'}`}>Viduto</span>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setDarkMode(!darkMode)}
-              className={darkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900'}
-              title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              {darkMode ? <Sun size={16} /> : <Moon size={16} />}
-            </Button>
-          </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSidebarOpen(false)}
-            className="md:hidden"
-          >
-            <X size={20} />
-          </Button>
-        </div>
-
-        {/* User Info */}
-        <div className={`p-4 md:p-6 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
-              <UserIcon size={16} className="text-white md:w-5 md:h-5" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className={`text-sm md:text-base font-normal truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>{user?.full_name || 'User'}</p>
-              <p className={`text-xs md:text-sm font-light truncate ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{user?.email}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <span className={`text-xs md:text-sm font-light ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Credits</span>
-              <div className="flex items-center gap-2">
-                <Zap size={16} className="text-orange-500" />
-                <span className="text-sm md:text-base text-orange-500 font-bold">{userCredits}</span>
-              </div>
-            </div>
-            <Button
-              size="sm"
-              variant="outline"
-              className={darkMode ? 'border-gray-600 text-gray-200 hover:bg-gray-700' : 'border-gray-200 text-gray-700 hover:bg-gray-100'}
-            >
-              Buy More
-            </Button>
-          </div>
-        </div>
-
-        {/* New Project Button */}
-        <div className="p-3 md:p-4">
-          <Button
-            onClick={createNewChat}
-            className="w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-3 bg-orange-500 text-white font-normal text-sm md:text-base rounded-full hover:bg-orange-500/90 transform hover:scale-[1.02] transition-all duration-200 shadow-lg"
-          >
-            <Plus size={16} />
-            New Project
-          </Button>
-        </div>
-
-        {/* Chat List */}
-        <div className="flex-1 overflow-y-auto p-3 md:p-4">
-          <h4 className={`text-xs md:text-sm font-normal mb-2 md:mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Recent Projects</h4>
-          <div className="space-y-2">
-            {chats.length === 0 ? (
-              <div className={`text-center py-6 md:py-8 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                <p className="text-sm md:text-base font-light">No projects yet</p>
-                <p className="text-xs md:text-sm mt-1 font-light">Create your first video!</p>
-              </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage user={user} onAuthRequired={handleAuthRequired} />} />
+        <Route path="/features" element={<FeaturesPage user={user} onAuthRequired={handleAuthRequired} />} />
+        <Route path="/pricing" element={<PricingPage user={user} onAuthRequired={handleAuthRequired} />} />
+        <Route path="/blog" element={<BlogPage user={user} onAuthRequired={handleAuthRequired} />} />
+        <Route path="/enterprise" element={<EnterprisePage user={user} onAuthRequired={handleAuthRequired} />} />
+        <Route 
+          path="/dashboard" 
+          element={
+            user ? (
+              <Dashboard user={user} />
             ) : (
-              chats.map((chat) => (
-                <button
-                  key={chat.id}
-                  onClick={() => {
-                    setCurrentChatId(chat.id);
-                    setSidebarOpen(false);
-                  }}
-                  className={`w-full text-left p-2 md:p-3 rounded-lg transition-colors ${
-                    currentChatId === chat.id
-                      ? 'bg-orange-500/10 text-orange-500 font-normal border border-orange-500/30'
-                      : darkMode 
-                        ? 'text-gray-300 hover:bg-gray-700 font-light'
-                        : 'text-gray-700 hover:bg-gray-100 font-light'
-                  }`}
-                >
-                  <p className="text-sm md:text-base font-normal truncate">{chat.title || 'New Video Project'}</p>
-                  <p className={`text-xs md:text-sm mt-1 font-light ${darkMode ? 'text-gray-500' : 'text-gray-600'}`}>
-                    {new Date(chat.updated_date).toLocaleDateString()}
-                  </p>
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Bottom Actions */}
-        <div className={`border-t p-3 md:p-4 space-y-2 ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-          <button
-            className={`w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 rounded-lg transition-colors font-normal text-sm md:text-base mb-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:from-orange-600 hover:to-pink-600`}
-          >
-            <Gift size={16} />
-            Win FREE Credits!
-          </button>
-          
-          <button
-            className={`w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 rounded-lg transition-colors font-normal text-sm md:text-base ${
-              darkMode ? 'text-gray-300 hover:text-gray-100 hover:bg-gray-700' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
-            }`}
-          >
-            <CreditCard size={16} />
-            My Subscription
-          </button>
-
-          <button
-            onClick={handleSignOut}
-            className={`w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 rounded-lg transition-colors font-normal text-sm md:text-base ${
-              darkMode 
-                ? 'text-gray-300 hover:text-red-400 hover:bg-red-900/20' 
-                : 'text-gray-700 hover:text-red-600 hover:bg-red-50'
-            }`}
-          >
-            <LogOut size={16} />
-            Log Out
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Mobile Header */}
-        <div className={`md:hidden p-4 flex items-center justify-between ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b`}>
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className={`p-2 rounded-lg transition-colors ${
-              darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
-            }`}
-          >
-            <Menu size={20} className={darkMode ? 'text-gray-300' : 'text-gray-700'} />
-          </button>
-          <span className={`font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-            {chats.find(c => c.id === currentChatId)?.title || 'Dashboard'}
-          </span>
-          <div className="w-8"></div>
-        </div>
-
-        {/* Chat Interface */}
-        <div className="flex-1 flex flex-col">
-          {currentChatId ? (
-            <ChatInterface chatId={currentChatId} darkMode={darkMode} />
-          ) : (
-            <div className={`flex-1 flex items-center justify-center ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Plus className="w-8 h-8 text-orange-500" />
-                </div>
-                <h3 className={`text-xl font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-                  Ready to create your first video?
-                </h3>
-                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-6`}>
-                  Upload your product image and describe your vision
-                </p>
-                <Button onClick={createNewChat}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  New Project
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Backdrop for mobile sidebar */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden" 
-          onClick={() => setSidebarOpen(false)}
+              <Navigate to="/" replace />
+            )
+          } 
         />
-      )}
-    </div>
-  );
-};
-
-// Chat Interface Component
-const ChatInterface = ({ chatId, darkMode }) => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim() && !selectedFile) return;
-    
-    setIsLoading(true);
-    
-    // Add user message
-    const userMessage = {
-      id: Date.now(),
-      type: 'user',
-      content: input,
-      file: selectedFile
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setSelectedFile(null);
-    
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMessage = {
-        id: Date.now() + 1,
-        type: 'assistant',
-        content: "I'll help you create an amazing video! Let me start working on your project. This will take about 10 minutes to complete.",
-        isGenerating: true
-      };
-      setMessages(prev => [...prev, aiMessage]);
-      setIsLoading(false);
+        {/* Redirect any unknown routes to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
       
-      // Simulate video generation completion
-      setTimeout(() => {
-        setMessages(prev => prev.map(msg => 
-          msg.id === aiMessage.id 
-            ? { ...msg, content: "Your video is ready! Here's your professional 30-second product video.", isGenerating: false, hasVideo: true }
-            : msg
-        ));
-      }, 5000);
-    }, 1000);
-  };
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
-  };
-
-  return (
-    <div className={`flex-1 flex flex-col ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <MessageSquare className="w-8 h-8 text-orange-500" />
-            </div>
-            <h3 className={`text-xl font-medium mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
-              Let's create something amazing!
-            </h3>
-            <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Upload your product image and tell me what kind of video you want to create.
-            </p>
-          </div>
-        )}
-
-        {messages.map((message) => (
-          <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-3xl rounded-lg p-4 ${
-              message.type === 'user' 
-                ? 'bg-orange-500 text-white' 
-                : darkMode 
-                  ? 'bg-gray-800 text-gray-100' 
-                  : 'bg-gray-100 text-gray-900'
-            }`}>
-              {message.file && (
-                <img 
-                  src={URL.createObjectURL(message.file)} 
-                  alt="Uploaded" 
-                  className="w-32 h-32 object-cover rounded-lg mb-2"
-                />
-              )}
-              <p>{message.content}</p>
-              {message.isGenerating && (
-                <div className="flex items-center gap-2 mt-2">
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="text-sm">Generating video...</span>
-                </div>
-              )}
-              {message.hasVideo && (
-                <div className="mt-4 space-y-2">
-                  <div className="bg-gray-800 rounded-lg p-4 text-center">
-                    <Play className="w-12 h-12 text-white mx-auto mb-2" />
-                    <p className="text-white text-sm">Video Preview</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" className="flex-1">
-                      <Download className="w-4 h-4 mr-1" />
-                      Download
-                    </Button>
-                    <Button size="sm" variant="outline" className="flex-1">
-                      <Wand2 className="w-4 h-4 mr-1" />
-                      Request Changes
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Input Area */}
-      <div className={`border-t p-4 ${darkMode ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-white'}`}>
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          {selectedFile && (
-            <div className="flex items-center gap-2 bg-orange-100 rounded-lg p-2">
-              <img src={URL.createObjectURL(selectedFile)} alt="Preview" className="w-8 h-8 object-cover rounded" />
-              <span className="text-xs text-orange-800 truncate max-w-20">{selectedFile.name}</span>
-              <button type="button" onClick={() => setSelectedFile(null)}>
-                <X className="w-4 h-4 text-orange-600" />
-              </button>
-            </div>
-          )}
-          
-          <div className="flex-1 flex gap-2">
-            <input
-              type="file"
-              id="file-upload"
-              accept="image/*"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={() => document.getElementById('file-upload')?.click()}
-            >
-              <Upload className="w-4 h-4" />
-            </Button>
-            
-            <Input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Describe your video idea..."
-              className="flex-1"
-            />
-            
-            <Button type="submit" disabled={isLoading || (!input.trim() && !selectedFile)}>
-              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-// Main App Component
-export default function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
-
-  useEffect(() => {
-    const handlePopState = () => {
-      setCurrentPath(window.location.pathname);
-    };
-    
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
-  return (
-    <div>
-      {currentPath === '/dashboard' ? <Dashboard /> : <HomePage />}
-    </div>
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+    </Router>
   );
 }
